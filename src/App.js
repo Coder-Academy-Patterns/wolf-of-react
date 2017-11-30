@@ -7,8 +7,8 @@ class App extends Component {
   state = {
     error: null,
     enteredSymbol: 'AAPL',
-    quote: null,
-    logoImageURL: null
+    symbolHistory: [],
+    symbolsToInfo: {}
   }
 
   // The first time our component is rendered
@@ -17,33 +17,64 @@ class App extends Component {
     this.loadQuote()
   }
 
-  loadQuote = () => {
-    const { enteredSymbol } = this.state
+  addInfoForSymbol = (symbol, newInfo) => {
+    this.setState((prevState) => {
+      return {
+        symbolsToInfo: {
+          // Keep previous loaded info
+          ...prevState.symbolsToInfo,
+          [symbol]: {
+            // Merge in current info of symbol, such as logo image
+            ...prevState.symbolsToInfo[symbol],
+            // Add new info
+            ...newInfo
+          }
+        }
+      }
+    })
+  }
 
-    loadQuoteForStock(enteredSymbol)
+  loadQuoteForSymbol = (symbol) => {
+    this.setState((prevState) => {
+      return {
+        symbolHistory: [
+          // Add to front of symbol history
+          symbol,
+          ...prevState.symbolHistory
+        ]
+      }
+    })
+
+    loadQuoteForStock(symbol)
       .then((quote) => { // Success
-        this.setState({
-          quote: quote,
-          error: null // Clear error
+        this.addInfoForSymbol(symbol, {
+          quote,
+          error: null
         })
       })
       .catch((error) => {
         // If 404 not found
         if (error.response.status === 404) {
-          error = new Error(`The stock symbol '${enteredSymbol}' does not exist`)
+          error = new Error(`The stock symbol '${symbol}' does not exist`)
         }
-        this.setState({ error: error })
+        this.addInfoForSymbol(symbol, {
+          error
+        })
       })
     
-    loadLogoURLForStock(enteredSymbol)
+    loadLogoURLForStock(symbol)
       .then((url) => {
-        this.setState({
+        this.addInfoForSymbol(symbol, {
           logoImageURL: url
         })
       })
       .catch((error) => {
         // Error will be same as the quote above
       })
+  }
+
+  loadQuote = () => {
+    this.loadQuoteForSymbol(this.state.enteredSymbol)
   }
 
   onChangeEnteredSymbol = (event) => {
@@ -57,7 +88,14 @@ class App extends Component {
   }
 
   render() {
-    const { error, enteredSymbol, quote, logoImageURL } = this.state
+    const { error, enteredSymbol, symbolHistory, symbolsToInfo } = this.state
+
+    let quote = null, logoImageURL = null
+    const currentSymbol = symbolHistory[0]
+    if (currentSymbol && symbolsToInfo[currentSymbol]) {
+      quote = symbolsToInfo[currentSymbol].quote
+      logoImageURL = symbolsToInfo[currentSymbol].logoImageURL
+    }
 
     return (
       <div className="App">
@@ -95,6 +133,26 @@ class App extends Component {
             <p>Loading…</p>
           )
         }
+
+        <h2>History</h2>
+        <ul>
+        {
+          symbolHistory.map((symbol, index) => (
+            <li key={ `${symbol}-${index}` }>
+              <button
+                onClick={
+                  () => {
+                    this.setState({ enteredSymbol: symbol })
+                    this.loadQuoteForSymbol(symbol)
+                  }
+                }
+              >
+                { symbol }
+              </button>
+            </li>
+          ))
+        }
+        </ul>
       </div>
     );
   }
