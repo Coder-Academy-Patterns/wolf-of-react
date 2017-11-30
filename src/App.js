@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import StockInfo from './components/StockInfo'
-import { loadQuoteForStock } from './api/iex'
+import { loadQuoteForStock, loadLogoURLForStock } from './api/iex'
 
 class App extends Component {
   state = {
     error: null,
     enteredSymbol: 'AAPL',
-    quote: null
+    quote: null,
+    logoImageURL: null
   }
 
   // The first time our component is rendered
@@ -33,6 +34,16 @@ class App extends Component {
         }
         this.setState({ error: error })
       })
+    
+    loadLogoURLForStock(enteredSymbol)
+      .then((url) => {
+        this.setState({
+          logoImageURL: url
+        })
+      })
+      .catch((error) => {
+        // Error will be same as the quote above
+      })
   }
 
   onChangeEnteredSymbol = (event) => {
@@ -46,7 +57,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, enteredSymbol, quote } = this.state
+    const { error, enteredSymbol, quote, logoImageURL } = this.state
 
     return (
       <div className="App">
@@ -78,6 +89,7 @@ class App extends Component {
               latestSource={ quote.latestSource }
               week52High={ quote.week52High }
               week52Low={ quote.week52Low }
+              logoImageURL={ logoImageURL }
             />
           ) : (
             <p>Loading…</p>

@@ -7,12 +7,16 @@ function StockInfo({
   latestPrice, // 188.15
   latestSource, // Close
   week52High, // 204.38
-  week52Low // 113.95
+  week52Low, // 113.95
+  logoImageURL
 }) {
   return (
     <div>
       <h2>{ symbol }: { companyName }</h2>
       <h3>{ latestPrice } ({ latestSource })</h3>
+      { !!logoImageURL &&
+        <img src={ logoImageURL } />
+      }
       <dl>
         <dt>Week 52 high</dt>
         <dd>{ week52High }</dd>
