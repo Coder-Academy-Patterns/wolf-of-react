@@ -15,7 +15,7 @@ function StockQuote({
       <h2>{ symbol }: { companyName }</h2>
       <h3>{ latestPrice } ({ latestSource })</h3>
       { !!logoImageURL &&
-        <img src={ logoImageURL } />
+        <img src={ logoImageURL } alt={`Logo for ${companyName}`} />
       }
       <dl>
         <dt>Week 52 high</dt>
