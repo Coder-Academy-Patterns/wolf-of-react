@@ -9,9 +9,11 @@ function StockHistoricalTable({
       <h2>{ title }</h2>
       <table>
         <thead>
-          <th>Open</th>
-          <th>Close</th>
-          <th>% Change</th>
+          <tr>
+            <th>Open</th>
+            <th>Close</th>
+            <th>% Change</th>
+          </tr>
         </thead>
         <tbody>
         {
