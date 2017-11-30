@@ -14,7 +14,7 @@ class App extends Component {
   // The first time our component is rendered
   // this method is called
   componentDidMount() {
-    this.loadQuote()
+    this.loadInfoForEnteredSymbol()
   }
 
   addInfoForSymbol = (symbol, newInfo) => {
@@ -34,7 +34,7 @@ class App extends Component {
     })
   }
 
-  loadQuoteForSymbol = (symbol) => {
+  loadInfoForSymbol = (symbol) => {
     this.setState((prevState) => {
       return {
         symbolHistory: [
@@ -73,8 +73,8 @@ class App extends Component {
       })
   }
 
-  loadQuote = () => {
-    this.loadQuoteForSymbol(this.state.enteredSymbol)
+  loadInfoForEnteredSymbol = () => {
+    this.loadInfoForSymbol(this.state.enteredSymbol)
   }
 
   onChangeEnteredSymbol = (event) => {
@@ -109,7 +109,7 @@ class App extends Component {
         />
         <button
           className='ml-1'
-          onClick={ this.loadQuote }
+          onClick={ this.loadInfoForEnteredSymbol }
         >
           Load Quote
         </button>
@@ -143,7 +143,7 @@ class App extends Component {
                 onClick={
                   () => {
                     this.setState({ enteredSymbol: symbol })
-                    this.loadQuoteForSymbol(symbol)
+                    this.loadInfoForSymbol(symbol)
                   }
                 }
               >
