@@ -4,6 +4,7 @@ import StockQuote from './components/StockQuote'
 import SymbolHistory from './components/SymbolHistory'
 import StockNews from './components/StockNews'
 import StockHistoricalTable from './components/StockHistoricalTable'
+import StockHistoricalChart from './components/StockHistoricalChart'
 import { loadQuoteForStock, loadLogoURLForStock, loadNewsForStock, load6MonthHistoryForStock } from './api/iex'
 
 class App extends Component {
@@ -171,6 +172,12 @@ class App extends Component {
           )
         }
 
+        { dailyData &&
+          <StockHistoricalChart
+            title='Past 6 Months'
+            dailyData={ dailyData }
+          />
+        }
         { dailyData &&
           <StockHistoricalTable
             title='Past 6 Months'
