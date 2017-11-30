@@ -5,24 +5,37 @@ import { loadQuoteForStock } from './api/iex'
 
 class App extends Component {
   state = {
+    error: null,
     quote: null
   }
 
   // The first time our component is rendered
   // this method is called
   componentDidMount() {
-    loadQuoteForStock('nflx')
+    loadQuoteForStock('sdfgsdfg')
       .then((quote) => {
         this.setState({ quote: quote })
+      })
+      .catch((error) => {
+        // If 404 not found
+        if (error.response.status === 404) {
+          error = new Error('The stock symbol does not exist')
+        }
+        this.setState({ error: error })
+        // console.log('Error loading quote', error.response.status)
+        console.log('Error loading quote', error)
       })
   }
 
   render() {
-    const { quote } = this.state
+    const { error, quote } = this.state
 
     return (
       <div className="App">
         <h1>Wolf of React</h1>
+        { !!error && // Conditional that must pass for this to show
+          <p>{ error.message }</p>
+        }
         {
           !!quote ? (
             <StockInfo
