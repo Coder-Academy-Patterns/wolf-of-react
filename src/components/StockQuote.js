@@ -1,6 +1,6 @@
 import React from 'react'
 
-function StockInfo({
+function StockQuote({
   symbol, // NFLX
   companyName, // Netflix Inc.
   primaryExchange, // Nasdaq Global Select
@@ -31,4 +31,4 @@ function StockInfo({
   )
 }
 
-export default StockInfo
+export default StockQuote

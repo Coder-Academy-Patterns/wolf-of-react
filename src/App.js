@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import StockInfo from './components/StockInfo'
+import StockQuote from './components/StockQuote'
 import { loadQuoteForStock, loadLogoURLForStock } from './api/iex'
 
 class App extends Component {
@@ -81,7 +81,7 @@ class App extends Component {
         }
         {
           !!quote ? (
-            <StockInfo
+            <StockQuote
               symbol={ quote.symbol }
               companyName={ quote.companyName }
               primaryExchange={ quote.primaryExchange }
