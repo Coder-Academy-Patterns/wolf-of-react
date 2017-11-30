@@ -18,6 +18,13 @@ button {
   border: none;
 }
 
+table {
+  width: 100%;
+}
+th {
+  text-align: left;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
