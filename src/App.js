@@ -3,7 +3,8 @@ import './App.css';
 import StockQuote from './components/StockQuote'
 import SymbolHistory from './components/SymbolHistory'
 import StockNews from './components/StockNews'
-import { loadQuoteForStock, loadLogoURLForStock, loadNewsForStock } from './api/iex'
+import StockHistoricalTable from './components/StockHistoricalTable'
+import { loadQuoteForStock, loadLogoURLForStock, loadNewsForStock, load6MonthHistoryForStock } from './api/iex'
 
 class App extends Component {
   state = {
@@ -89,6 +90,22 @@ class App extends Component {
           error
         })
       })
+    
+    load6MonthHistoryForStock(symbol)
+      .then((dailyData) => {
+        this.addInfoForSymbol(symbol, {
+          dailyData
+        })
+      })
+      .catch((error) => {
+        // If 404 not found
+        if (error.response.status === 404) {
+          error = new Error(`The stock symbol '${symbol}' does not exist`)
+        }
+        this.addInfoForSymbol(symbol, {
+          error
+        })
+      })
   }
 
   loadInfoForEnteredSymbol = () => {
@@ -108,12 +125,13 @@ class App extends Component {
   render() {
     const { error, enteredSymbol, symbolHistory, symbolsToInfo } = this.state
 
-    let quote = null, logoImageURL = null, news = null
+    let quote = null, logoImageURL = null, news = null, dailyData = null
     const currentSymbol = symbolHistory[0]
     if (currentSymbol && symbolsToInfo[currentSymbol]) {
       quote = symbolsToInfo[currentSymbol].quote
       logoImageURL = symbolsToInfo[currentSymbol].logoImageURL
       news = symbolsToInfo[currentSymbol].news
+      dailyData = symbolsToInfo[currentSymbol].dailyData
     }
 
     return (
@@ -151,6 +169,13 @@ class App extends Component {
           ) : (
             <p>Loading…</p>
           )
+        }
+
+        { dailyData &&
+          <StockHistoricalTable
+            title='Past 6 Months'
+            dailyData={ dailyData }
+          />
         }
 
         <SymbolHistory

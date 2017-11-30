@@ -18,3 +18,8 @@ export function loadNewsForStock(symbol) {
   return api.get(`/stock/${symbol}/news/last/10`)
   .then((res) => res.data)
 }
+
+export function load6MonthHistoryForStock(symbol) {
+  return api.get(`/stock/${symbol}/chart/6m`)
+  .then((res) => res.data)
+}
