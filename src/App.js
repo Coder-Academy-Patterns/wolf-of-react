@@ -6,13 +6,14 @@ import { loadQuoteForStock } from './api/iex'
 class App extends Component {
   state = {
     error: null,
+    enteredSymbol: 'AAPL',
     quote: null
   }
 
   // The first time our component is rendered
   // this method is called
   componentDidMount() {
-    loadQuoteForStock('sdfgsdfg')
+    loadQuoteForStock('nflx')
       .then((quote) => {
         this.setState({ quote: quote })
       })
@@ -27,12 +28,30 @@ class App extends Component {
       })
   }
 
+  onChangeEnteredSymbol = (event) => {
+    const input = event.target // The <input>
+    const rawValue = input.value // The text entered by the user
+    const value = rawValue.trim().toUpperCase() // Trim whitespace, make uppercase
+    // Change this.state.enteredSymbol
+    this.setState({
+      enteredSymbol: value
+    })
+  }
+
   render() {
-    const { error, quote } = this.state
+    const { error, enteredSymbol, quote } = this.state
 
     return (
       <div className="App">
         <h1>Wolf of React</h1>
+
+        <input
+          value={ enteredSymbol }
+          placeholder='Symbol e.g. NFLX'
+          aria-label='Symbol'
+          onChange={ this.onChangeEnteredSymbol }
+        />
+        
         { !!error && // Conditional that must pass for this to show
           <p>{ error.message }</p>
         }
