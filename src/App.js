@@ -13,18 +13,25 @@ class App extends Component {
   // The first time our component is rendered
   // this method is called
   componentDidMount() {
-    loadQuoteForStock('nflx')
-      .then((quote) => {
-        this.setState({ quote: quote })
+    this.loadQuote()
+  }
+
+  loadQuote = () => {
+    const { enteredSymbol } = this.state
+
+    loadQuoteForStock(enteredSymbol)
+      .then((quote) => { // Success
+        this.setState({
+          quote: quote,
+          error: null // Clear error
+        })
       })
       .catch((error) => {
         // If 404 not found
         if (error.response.status === 404) {
-          error = new Error('The stock symbol does not exist')
+          error = new Error(`The stock symbol '${enteredSymbol}' does not exist`)
         }
         this.setState({ error: error })
-        // console.log('Error loading quote', error.response.status)
-        console.log('Error loading quote', error)
       })
   }
 
@@ -51,6 +58,12 @@ class App extends Component {
           aria-label='Symbol'
           onChange={ this.onChangeEnteredSymbol }
         />
+        <button
+          className='ml-1'
+          onClick={ this.loadQuote }
+        >
+          Load Quote
+        </button>
         
         { !!error && // Conditional that must pass for this to show
           <p>{ error.message }</p>
