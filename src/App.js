@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import StockQuote from './components/StockQuote'
+import SymbolHistory from './components/SymbolHistory'
+import StockNews from './components/StockNews'
 import { loadQuoteForStock, loadLogoURLForStock, loadNewsForStock } from './api/iex'
 
 class App extends Component {
@@ -151,40 +153,21 @@ class App extends Component {
           )
         }
 
-        <h2>History</h2>
-        <ul>
-        {
-          symbolHistory.map((symbol, index) => (
-            <li key={ `${symbol}-${index}` }>
-              <button
-                onClick={
-                  () => {
-                    this.setState({ enteredSymbol: symbol })
-                    this.loadInfoForSymbol(symbol)
-                  }
-                }
-              >
-                { symbol }
-              </button>
-            </li>
-          ))
-        }
-        </ul>
+        <SymbolHistory
+          symbolHistory={ symbolHistory }
+          onChooseSymbol={
+            (symbol) => {
+              this.setState({ enteredSymbol: symbol })
+              this.loadInfoForSymbol(symbol)
+            }
+          }
+        />
 
-        <h2>News</h2>
-        <ul>
         { news &&
-            news.map((newsStory) => (
-              <li key={ newsStory.url }>
-                <a
-                  href={ newsStory.url}
-                >
-                  { newsStory.headline }
-                </a>
-              </li>
-            ))
+            <StockNews
+              news={ news }
+            />
         }
-        </ul>
       </div>
     );
   }
