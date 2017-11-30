@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import StockQuote from './components/StockQuote'
-import { loadQuoteForStock, loadLogoURLForStock } from './api/iex'
+import { loadQuoteForStock, loadLogoURLForStock, loadNewsForStock } from './api/iex'
 
 class App extends Component {
   state = {
@@ -71,6 +71,22 @@ class App extends Component {
       .catch((error) => {
         // Error will be same as the quote above
       })
+    
+    loadNewsForStock(symbol)
+      .then((news) => { // Success
+        this.addInfoForSymbol(symbol, {
+          news
+        })
+      })
+      .catch((error) => {
+        // If 404 not found
+        if (error.response.status === 404) {
+          error = new Error(`The stock symbol '${symbol}' does not exist`)
+        }
+        this.addInfoForSymbol(symbol, {
+          error
+        })
+      })
   }
 
   loadInfoForEnteredSymbol = () => {
@@ -90,11 +106,12 @@ class App extends Component {
   render() {
     const { error, enteredSymbol, symbolHistory, symbolsToInfo } = this.state
 
-    let quote = null, logoImageURL = null
+    let quote = null, logoImageURL = null, news = null
     const currentSymbol = symbolHistory[0]
     if (currentSymbol && symbolsToInfo[currentSymbol]) {
       quote = symbolsToInfo[currentSymbol].quote
       logoImageURL = symbolsToInfo[currentSymbol].logoImageURL
+      news = symbolsToInfo[currentSymbol].news
     }
 
     return (
@@ -151,6 +168,21 @@ class App extends Component {
               </button>
             </li>
           ))
+        }
+        </ul>
+
+        <h2>News</h2>
+        <ul>
+        { news &&
+            news.map((newsStory) => (
+              <li key={ newsStory.url }>
+                <a
+                  href={ newsStory.url}
+                >
+                  { newsStory.headline }
+                </a>
+              </li>
+            ))
         }
         </ul>
       </div>

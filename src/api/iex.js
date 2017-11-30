@@ -13,3 +13,8 @@ export function loadLogoURLForStock(symbol) {
   return api.get(`/stock/${symbol}/logo`)
     .then((res) => res.data.url)
 }
+
+export function loadNewsForStock(symbol) {
+  return api.get(`/stock/${symbol}/news/last/10`)
+  .then((res) => res.data)
+}
